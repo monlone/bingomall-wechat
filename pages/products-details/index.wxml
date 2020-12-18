@@ -1,0 +1,341 @@
+<import src="/template/login/index.wxml"/>
+<view class="container">
+    <view class="swiper-container">
+        <swiper class="swiper_box" indicator-dots="true" indicator-active-color="#fff"
+                autoplay="{{!productsDetail.videoId}}" circular>
+            <swiper-item wx:if="{{productsDetail.videoId}}">
+                <video src="{{videoMp4Src}}" autoplay="true" loop="true" style='width:100%;height:100%;'></video>
+            </swiper-item>
+            <swiper-item wx:for="{{productsDetail.pics}}" wx:key="id">
+                <image src="{{item.imageURL}}" class="slide-image" mode="aspectFill" lazy-load="true"/>
+            </swiper-item>
+        </swiper>
+    </view>
+    <view class="products-info">
+        <view class="products-title">{{productsDetail.title}}</view>
+        <view class="products-share" wx:if="{{productsDetail.commissionType === 1}}">分享有赏，好友下单后可得
+            {{productsDetail.commission}} 积分奖励
+        </view>
+        <view class="products-share" wx:if="{{productsDetail.commissionType === 2}}">分享有赏，好友下单后可得
+            {{productsDetail.commission}}元 现金奖励
+        </view>
+        <view class="products-profile">
+            <view class="p">
+                <text>¥</text>
+                {{selectSizePrice}}
+            </view>
+            <view wx:if="{{productsDetail.product.originalPrice && productsDetail.product.originalPrice > 0}}"
+                  class="products-price"
+                  style='color:#aaa;text-decoration:line-through;padding: 15rpx 0rpx 0rpx 15rpx;'>
+                <text>¥</text>
+                {{selectSizeOPrice}}
+            </view>
+            <view class="r">已有{{productsDetail.product.soldNumber}}人购买</view>
+        </view>
+        <view class="products-info-fx">
+            <view class='item'>
+                <image src='/images/share/share1.png'></image>
+                <button open-type='share'></button>
+            </view>
+            <view class="item" bindtap="drawSharePic">
+                <image src='/images/share/share2.png'></image>
+            </view>
+        </view>
+    </view>
+    <view class="page__bd" wx:if="{{curProductsBargain}}" style='width:750rpx;'>
+        <view class="weui-cells__title">商品砍价设置</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">限量</view>
+                <view class="weui-cell__ft">{{curProductsBargain.number}}份</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">已售</view>
+                <view class="weui-cell__ft">{{curProductsBargain.numberBuy}}份</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">原价</view>
+                <view class="weui-cell__ft">￥{{curProductsBargain.originalPrice}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">底价</view>
+                <view class="weui-cell__ft">￥{{curProductsBargain.minPrice}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">截止</view>
+                <view class="weui-cell__ft">{{curProductsBargain.dateEnd}}</view>
+            </view>
+        </view>
+    </view>
+    <view class="page__bd" wx:if="{{groupSet}}" style='width:750rpx;'>
+        <view class="weui-cells__title">商品拼团设置</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">已成团</view>
+                <view class="weui-cell__ft">{{groupSet.numberSucccess}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">成团人数</view>
+                <view class="weui-cell__ft">{{groupSet.numberPersion}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">退款条件</view>
+                <view class="weui-cell__ft">{{groupSet.timeoutHours}}小时未成团</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">截止</view>
+                <view class="weui-cell__ft">{{groupSet.dateEnd}}</view>
+            </view>
+        </view>
+    </view>
+    <view class="curBargainProgress" wx:if="{{curBargainProgress}}">
+        <view class="name">帮
+            <text style='color:red;font-weight:bold;'>{{curBargainProgress.joiner.nick}}</text>
+            砍价吧！
+        </view>
+        <view class="weui-badge">当前价格 ￥ {{curBargainProgress.price}}
+        </view>
+        <view class="weui-progress" style='background-color:#fff;'>
+            <view class="weui-progress__bar">
+                <progress
+                        percent="{{100 * (curProductsBargain.originalPrice - curBargainProgress.price) / (curProductsBargain.originalPrice - curProductsBargain.minPrice)}}"
+                        stroke-width="8"/>
+            </view>
+        </view>
+        <view class="weui-flex">
+            <view>
+                <view class="placeholder">{{curProductsBargain.originalPrice}}</view>
+            </view>
+            <view class="weui-flex__item"></view>
+            <view>
+                <view class="placeholder">{{curProductsBargain.minPrice}}</view>
+            </view>
+        </view>
+        <view class="weui-flex">
+            <view>
+                <view class="placeholder">原价</view>
+            </view>
+            <view class="weui-flex__item"></view>
+            <view>
+                <view class="placeholder">底价</view>
+            </view>
+        </view>
+        <view class="weui-flex">
+            <view class="weui-flex__item bargainButton">
+                <button class="weui-btn" type="primary" open-type="share">邀请朋友帮忙</button>
+            </view>
+            <view class="weui-flex__item bargainButton">
+                <button class="weui-btn" type="warn" bindtap="helpBargain" disabled="{{myHelpDetail}}">
+                    {{myHelpDetail?"您已砍过":"帮TA砍"}}
+                </button>
+            </view>
+        </view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">帮砍人数</view>
+                <view class="weui-cell__ft">{{curBargainProgress.bargainInfo.helpNumber}}
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">状态</view>
+                <view class="weui-cell__ft">{{curBargainProgress.bargainInfo.statusStr}}
+                </view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">报名时间</view>
+                <view class="weui-cell__ft">￥{{curBargainProgress.bargainInfo.dateAdd}}
+                </view>
+            </view>
+        </view>
+    </view>
+    <button wx:if="{{curProductsBargain && (!curBargainProgress || curBargainProgress.bargainInfo.userId !== currentUid)}}"
+            class="weui-btn" type="warn" bindtap="joinBargain" style='width:700rpx;'>我也要报名参与
+    </button>
+    <view class='space'></view>
+    <view class="products-des-info" style="margin-top:35rpx;" wx:if="{{groupList}}">
+        <view class="label-title" style="border-bottom:1px solid #eee;">{{groupList.length}}人在拼单，可直接参与</view>
+        <view class="products-text" style="margin-top:15rpx;border-bottom:1px solid #eee;overflow:hidden;"
+              wx:for="{{groupList}}" wx:key="id">
+            <view style="width:150rpx;float:left;">
+                <image style="width: 150rpx; height: 150rpx;" src="{{item.apiExtUser.avatarUrl}}"></image>
+                <view style="width:150rpx;text-align:center;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                    {{item.apiExtUser.nick}}
+                </view>
+            </view>
+            <view style="width:500rpx;float:left;margin-left:35rpx;">
+                <view>已有
+                    <text style="color:red">{{item.helpNumber}}</text>人参与
+                </view>
+                <view style="color: #B0B0B0;font-size:24rpx;">截止: {{item.dateEnd}}</view>
+                <button type="warn" size="mini" data-groupOpenid="{{item.id}}" bindtap="toGroup">去拼单</button>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{hasMoreSelect && productsDetailSkuShowType === 0}}" class="row-arrow" bindtap="bindGuiGeTap">
+        <view>{{selectSize}}</view>
+        <image src="/images/icon/next.png"></image>
+    </view>
+    <view wx:if="{{shopSubDetail}}" class="shop-container">
+        <image mode="aspectFill" src="{{shopSubDetail.info.pic}}"></image>
+        <view class="info">
+            <view class="title">{{shopSubDetail.info.name}}</view>
+            <view class="address">{{shopSubDetail.info.address}}</view>
+        </view>
+    </view>
+    <view class="products-des-info">
+        <view class="label-title">商品介绍</view>
+        <view class="products-text">
+            <parser html="{{productsDetail.content}}"/>
+        </view>
+    </view>
+    <view class="products-des-info" style="margin-top:35rpx;" wx:if="{{!curProductsBargain && reputation}}">
+        <view class="label-title" style="border-bottom:1px solid #eee;">大家评价
+            <text style="color:red">（{{reputation.length}}）</text>
+        </view>
+        <view class="products-text clear-fix" style="margin-top:15rpx;" wx:for="{{reputation}}" wx:key="id">
+            <view style="width:100rpx;float:left;">
+                <image style="width: 100rpx; height: 100rpx;" src="{{item.user.avatarUrl}}"></image>
+                <view style="text-align:center;width:100rpx;">{{item.products.productReputationStr}}</view>
+            </view>
+            <view style="width:550rpx;float:left;margin-left:35rpx;border-bottom:1px solid #eee;">
+                <view>{{item.products.productReputationRemark}}</view>
+                <view style="color: #B0B0B0;font-size:24rpx;">{{item.products.dateReputation}}
+                    {{item.products.option}}
+                </view>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{curBargainProgress && curBargainProgress.help && curBargainProgress.help.length>0}}"
+          class="weui-panel weui-panel_access" style="width:750rpx;">
+        <view class="weui-panel__hd">砍价记录</view>
+        <view class="weui-panel__bd">
+            <view wx:for="{{curBargainProgress.helps}}" wx:key="*this" class="weui-media-box weui-media-box_app_msg">
+                <view class="weui-media-box__hd weui-media-box_app_msg">
+                    <image class="weui-media-box__thumb" src="{{item.avatarUrl}}"/>
+                </view>
+                <view class="weui-media-box__bd weui-media-box__bd_in-app_msg">
+                    <view class="weui-media-box__title" style='color:red;'>￥ {{item.bargainPrice}}</view>
+                    <view class="weui-media-box__desc" style='margin-top:10rpx;'>好友
+                        <text style='color:red;'>{{item.nick}}</text>
+                        于 {{item.dateAdd}} 帮砍
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class='bargainBuyButton' wx:if="{{curProductsBargain}}">
+        <button class="weui-btn" type="warn" bindtap="toBuy">用当前价购买</button>
+    </view>
+    <view wx:if="{{!curProductsBargain}}" class="footer-box">
+        <view class="contact">
+            <button type="primary" open-type="contact"/>
+            <image src="/images/icon/kf.svg"></image>
+        </view>
+        <view class="shopping-cart-btn" bindtap="goShopCar">
+            <view class="shop-num">{{shoppingCartNumber}}</view>
+            <image src="/images/nav/cart-off.png"></image>
+        </view>
+        <image bindtap="addFav" class="fav-icon" src="/images/icon/fav{{favourite?'1':'0'}}.svg"></image>
+        <!--<view wx:if="{{!(productsDetail.priceType === 2)}}" class="join-shopping-cart"-->
+        <!--bindtap="{{productsDetail.SkuShowType === 0?'toAddShopCart':'addShopCart'}}">加入购物车-->
+        <!--</view>-->
+        <!--/** 商品的价格类型 1-普通价格商品，2-秒杀商品，3-砍价商品，4-拼团商品*/-->
+        <view wx:if="{{productsDetail.product.priceType === 1 || productsDetail.product.priceType === 2}}"
+              class="join-shopping-cart"
+              bindtap="addShopCart">加入购物车
+        </view>
+        <!--<view wx:if="{{!productsDetail.group}}" class="now-buy" data-productType="{{productType}}"-->
+        <!--bindtap="{{productsDetail.SkuShowType === 0?'toBuy':'buyNow'}}">立即购买-->
+        <!--</view>-->
+        <view wx:if="{{productsDetail.product.priceType === 1 || productsDetail.product.priceType === 2}}"
+              class="now-buy" data-productType="{{productType}}"
+              bindtap="buyNow">立即购买
+        </view>
+        <view wx:if="{{productsDetail.product.priceType === 4}}" class="join-shopping-cart" bindtap="toBuy">单独购买</view>
+        <view wx:if="{{productsDetail.product.priceType === 4}}" class="now-buy" bindtap="toGroup">发起拼团</view>
+    </view>
+    <view class="show-popup" hidden="{{hideShopPopup}}" catchtouchmove="true">
+        <view class="popup-mask" bindtap="closePopupTap"></view>
+        <view class="popup-contents">
+            <view class="pop-products-info">
+                <view class="pop-img-box">
+                    <image src="{{skuProductsPic}}" class="products-thumbnail" bindtap="previewImage"
+                           data-url="{{skuProductsPic}}"/>
+                </view>
+                <view class="pop-products-des">
+                    <view class="pop-products-title">{{productsDetail.product.title}}</view>
+                    <view class="pop-products-price">
+                        ¥
+                        <text class="t1">{{selectSizePrice}}</text>
+                        <text wx:if="{{productsDetail.product.originalPrice && productsDetail.product.originalPrice > 0}}"
+                              class="pop-products-price-original">
+                            <text>¥</text>
+                            {{selectSizeOPrice}}
+                        </text>
+                    </view>
+                </view>
+                <image class="pop-products-close" src="/images/icon/close0.svg" bindtap="closePopupTap"></image>
+            </view>
+            <view class="option-label-box">
+                <view class="label-title">选择商品规格</view>
+                <block wx:for="{{productsDetail.optionList}}" wx:for-item="option" wx:for-index="optionType"
+                       wx:key="id">
+                    <view class="label-item-box">
+                        <view class="label-item-box" wx:if="{{optionType === '1'}}">
+                            颜色
+                        </view>
+                        <view class="label-item-box" wx:if="{{optionType === '2'}}">
+                            尺寸
+                        </view>
+                        <view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{option}}"
+                              wx:key="id" bindtap="labelItemTap" data-type="{{optionType}}"
+                              data-productOptionId="{{item.productOptionId}}">
+                            {{item.desc}}
+                        </view>
+                        <view class="label">{{option.desc}}</view>
+                    </view>
+                </block>
+            </view>
+            <view class="buy-num-box">
+                <view class="num-label">购买数量</view>
+                <view class="num-box">
+                    <view class="num-jian {{buyNumber === buyNumMin ? 'hui': ''}}" bindtap="numReduceTap">-</view>
+                    <view class="num-input">
+                        <input type="number" value="{{buyNumber}}" disabled/>
+                    </view>
+                    <view class="num-add {{buyNumber === buyNumMax ? 'hui': ''}}" bindtap="numAddTap">+</view>
+                </view>
+            </view>
+            <view class="safeAreaOldPaddingBottom safeAreaNewPaddingBottom" wx:if="{{productType ==='addShopCart'}}"
+                  bindtap="addShopCart">
+                <view class="popup-join-btn">加入购物车</view>
+            </view>
+            <view class="safeAreaOldPaddingBottom safeAreaNewPaddingBottom" data-productType="{{productType}}"
+                  wx:if="{{productType ==='toBuy' || productType === 'toGroup'}}" bindtap="buyNow">
+                <view class="popup-join-btn">立即购买</view>
+            </view>
+        </view>
+    </view>
+    <view class="safeAreaOldMarginBottom safeAreaNewMarginBottom"></view>
+</view>
+
+<block wx:if="{{posterShow}}">
+    <view class="poster-mask"></view>
+    <view class="poster">
+        <canvas class="canvas" style="{{canvasStyle}}" canvas-id="firstCanvas"></canvas>
+    </view>
+    <view class="poster-btn">
+        <button type="primary" size="mini" bindtap='saveToMobile'>保存图片</button>
+        <button type="warn" size="mini" bindtap='closePop'>关闭</button>
+    </view>
+</block>
+
+<template is="apiFormLogin" data="{{wechatLogin}}"/>
+        <!-- <float-menu />  -->
+
+<poster id="poster" config="{{posterConfig}}" bind:success="onPosterSuccess" bind:fail="onPosterFail"></poster>
+<view wx:if="{{showPosterImg}}" class="popup-mask"></view>
+<view wx:if="{{showPosterImg}}" class="posterImg-box">
+    <image mode="widthFix" class="posterImg" src="{{posterImg}}"></image>
+    <view class="btn-create" bindtap="savePosterPic">保存到相册</view>
+</view>

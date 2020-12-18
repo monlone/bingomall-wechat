@@ -1,0 +1,124 @@
+{
+  "description": "项目配置文件。",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": false,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": true,
+    "coverView": true,
+    "nodeModules": true,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "useMultiFrameRuntime": false,
+    "useApiHook": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useIsolateContext": true,
+    "useCompilerModule": true,
+    "userConfirmedUseCompilerModuleSwitch": false,
+    "packNpmManually": false,
+    "packNpmRelationList": []
+  },
+  "compileType": "miniprogram",
+  "libVersion": "2.12.2",
+  "appid": "wxc35fe69b7ebf9427",
+  "projectname": "%E5%A4%A9%E4%BD%BF%E7%AB%A5%E8%A3%85",
+  "scripts": {},
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
+  "condition": {
+    "search": {
+      "list": []
+    },
+    "conversation": {
+      "list": []
+    },
+    "plugin": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": [
+        {
+          "id": -1,
+          "name": "home",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "商品详情页面",
+          "pathName": "pages/products-details/index",
+          "query": "id=134&inviterId=456",
+          "scene": 1011
+        },
+        {
+          "id": -1,
+          "name": "商品详情页面",
+          "pathName": "pages/products-details/index",
+          "query": "id= 6761",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "砍价详情页面",
+          "pathName": "pages/products-details/index",
+          "query": "id=6765",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "砍价详情页面",
+          "pathName": "pages/products-details/index",
+          "query": "id=6765&bargainJoinUid=701677",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "拼团",
+          "pathName": "pages/products-details/index",
+          "query": "id=6761",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "生成海报",
+          "pathName": "pages/products-details/poster",
+          "query": "productsid=6761",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "分销中心",
+          "pathName": "pages/fx/apply-status",
+          "query": "",
+          "scene": null
+        },
+        {
+          "id": -1,
+          "name": "notice",
+          "pathName": "pages/notice/index",
+          "scene": null
+        }
+      ]
+    }
+  }
+}

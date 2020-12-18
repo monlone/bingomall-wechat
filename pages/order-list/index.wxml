@@ -1,0 +1,60 @@
+<view class="container">
+    <view wx:if='{{!hasRefund}}' class="status-box">
+        <view bindtap="statusTap" class="status-label {{item.status === status ? 'active' : ''}}"
+              wx:for="{{statusType}}"
+              wx:key="index" data-status="{{item.status}}">
+            {{item.label}}
+            <view wx:if="{{badges[index]}}" class="weui-badge" style="position: absolute;top: 5rpx;right: 5rpx;">
+                {{badges[index]}}
+            </view>
+        </view>
+    </view>
+    <view class="no-order" hidden="{{!!orderList}}">
+        <image src="/images/no-order.png" class="no-order-img"></image>
+        <view class="text">暂无订单</view>
+    </view>
+    <view class="order-list" hidden="{{!orderList}}">
+        <view class="a-order" wx:for="{{orderList}}" wx:for-item="order" wx:key="index">
+            <navigator url="/pages/order-details/index?id={{order.id}}" class="weui-cell weui-cell_access"
+                       hover-class="weui-cell_active">
+                <view class="weui-cell__bd">共 {{order.orderProduct.length}} 件商品</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <scroll-view class="products-img-container" scroll-x="true">
+                <view class="img-box" wx:for="{{order.orderProduct}}" wx:for-item="orderProduct" wx:key="index">
+                    <navigator url="/pages/products-details/index?id={{orderProduct.productId}}">
+                        <image src="{{orderProduct.product.imageUrl}}" class="products-img"></image>
+                    </navigator>
+                </view>
+            </scroll-view>
+            <view class="products-price">
+                合计：
+                <text class="p" wx:if="{{order.pay > 0}}">¥ {{order.totalAmount}}</text>
+                <text class="p" wx:if="{{order.totalScoreToPay > 0}}">¥ {{order.totalAmount}} +
+                    {{order.totalScoreToPay}}
+                    积分
+                </text>
+            </view>
+            <view class="products-info">
+                <view class="products-des">
+                    <view class="remark" wx:if="{{order.describe && order.describe !== ''}}">{{order.describe}}</view>
+                    <view>下单时间：{{order.createdAt}}</view>
+                </view>
+            </view>
+            <view class="price-box">
+                <view class="btn"
+                      hidden="{{order.status === 0 || order.status === 5 || order.status === 4 || order.status === 3}}"
+                      bindtap="cancelOrderTap"
+                      data-id="{{order.id}}">取消订单
+                </view>
+                <view class="btn active" hidden="{{order.status !== 0 }}" bindtap="toPayTap"
+                      data-id="{{order.id}}" data-money="{{order.pay}}" data-score="{{order.score}}">马上付款
+                </view>
+                <view class="btn active" hidden="{{(order.status !== 5)}}"
+                      bindtap="refundApply" data-id="{{order.id}}" data-amount='{{order.totalAmount}}'>退换货
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="safeAreaOldMarginBottom safeAreaNewMarginBottom"></view>
+</view>

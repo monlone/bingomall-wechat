@@ -1,0 +1,113 @@
+<view class="container">
+    <view class="products-list">
+        <view class="list-title">商品列表</view>
+        <view class="a-products" wx:for="{{productList}}" wx:for-item="item" wx:key="index">
+            <view class="img-box">
+                <image src="{{item.product.imageUrl}}" class="img"/>
+            </view>
+            <view class="text-box">
+                <view class="arrow arrow01">
+                    <view class="products-name">{{item.product.title}}</view>
+                    <view class="products-price">¥ {{item.sku.price}}</view>
+                </view>
+                <view class="arrow">
+                    <view class="products-label">
+                        <block wx:for="{{item.optionList}}" wx:for-item="list" wx:for-index="optionType" wx:key="id">
+                            <view class="label-item-inline" wx:for="{{list}}" wx:key="id" wx:for-item="option"
+                                  wx:if="{{option.active}}" bindtap="labelItemTap" data-type="{{optionType}}"
+                                  data-productOptionId="{{item.productOptionId}}">
+                                <view class="inline" wx:if="{{optionType === '1'}}">{{option.desc}},</view>
+                                <view class="inline" wx:if="{{optionType === '2'}}">{{option.desc}}</view>
+                            </view>
+                        </block>
+                    </view>
+                    <view class="products-num">x {{item.number}}</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class="shipping-way">
+        <view class="row-box" wx:if="{{isNeedLogistics > 0}}">
+            <view class="row-label">配送方式</view>
+            <radio-group bindchange="radioChange">
+                <label class="radio">
+                    <radio value="{{config.needDelivery}}" checked="{{deliveryType === config.needDelivery}}"/>
+                    快递
+                </label>
+                <label class="radio">
+                    <radio value="{{config.selfPickup}}" checked="{{deliveryType === config.selfPickup}}"/>
+                    到店自取
+                </label>
+            </radio-group>
+        </view>
+        <picker wx:if="{{deliveryType === config.selfPickup && shops}}" bindchange="shopSelect" value="{{shopIndex}}"
+                range="{{shops}}" range-key="name">
+            <van-cell title="选择自提门店" value="{{shopIndex === -1 ? '请选择':shops[shopIndex].name}}" is-link/>
+        </picker>
+        <van-cell wx:if="{{deliveryType === config.selfPickup && shopIndex !== -1}}" title="电话"
+                  value="{{shops[shopIndex].phone}}"
+                  is-link bind:click="callMobile"/>
+        <van-cell wx:if="{{deliveryType === config.selfPickup && shopIndex !== -1}}" title="地址"
+                  value="{{shops[shopIndex].address}}"
+                  is-link bind:click="goMap"/>
+        <view class="address-box" wx:if="{{deliveryType === config.needDelivery && isNeedLogistics > 0}}">
+            <view class="add-address" hidden="{{currentAddressData}}" bindtap="addAddress">
+                <image src="/images/add-addr.png"></image>
+                <view>新增收货地址</view>
+            </view>
+            <view class="show-address" hidden="{{!currentAddressData}}" bindtap="selectAddress">
+                <view class="l">
+                    <view class="name-tel">{{currentAddressData.contact}} {{currentAddressData.mobile}}</view>
+                    <view class="addr-text">{{currentAddressData.address}}</view>
+                </view>
+                <view class="r">
+                    <image class="next" src="/images/icon/next.png"></image>
+                </view>
+            </view>
+        </view>
+        <view class="row-box">
+            <view class="row-label">备注</view>
+            <view class="right-text">
+                <input bindInput="remarkChange" type="text" class="comment" placeholder="如需备注请输入"/>
+            </view>
+        </view>
+    </view>
+    <view class="shipping-way" hidden="{{!hasCoupons}}">
+        <view class="row-box" style="border-bottom:none;">
+            <view class="row-label t">使用优惠券</view>
+        </view>
+        <picker bindchange="bindChangeCoupon" range="{{coupons}}" range-key="nameExt">
+            <view class="row-box" style="border-bottom:none;">
+                <view class="row-label">{{curCouponShowText}}</view>
+                <image class="next" src="/images/icon/next.png"></image>
+            </view>
+        </picker>
+    </view>
+
+    <view class="products-info">
+        <view class="row-box">
+            <view class="row-label">商品金额</view>
+            <view class="right-text">¥ {{totalProductAmount/100}}</view>
+        </view>
+        <view class="row-box" wx:if="{{isNeedLogistics > 0 && deliveryType === config.needDelivery}}">
+            <view class="row-label">运费</view>
+            <view class="right-text">+ ¥ {{logisticsAmount/100}}</view>
+        </view>
+        <view class="row-box" wx:if="{{hasCoupons}}">
+            <view class="row-label">优惠券</view>
+            <view class="right-text">- ¥ {{discountedAmount/100}}</view>
+        </view>
+    </view>
+
+    <view class="checkOut-box">
+        <view class="left-price">
+            <view class="total">合计：¥ {{(totalAmount - discountedAmount)/100}} + {{totalScoreToPay}}
+                积分
+            </view>
+        </view>
+        <button class="to-pay-btn" bindtap="goCreateOrder">提交订单</button>
+    </view>
+</view>
+
+<import src="/template/login/index.wxml"/>
+<template is="apiFormLogin" data="{{wechatLogin}}"/>

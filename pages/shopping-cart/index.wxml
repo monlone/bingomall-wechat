@@ -1,0 +1,10 @@
+<!--index.wxml-->
+<import src="../template-cart/template-cart.wxml"/>
+
+<view class="container">
+    <template is="{{shoppingCartInfo.length > 0 ? 'cart-products-list' : 'no-products'}}"
+              data="{{shoppingCartInfo, saveHidden, allSelect, noSelect, totalPrice,totalScore}}"></template>
+</view>
+
+<import src="/template/login/index.wxml"/>
+<template is="apiFormLogin" data="{{wechatLogin}}"/>

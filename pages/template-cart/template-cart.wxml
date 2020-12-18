@@ -1,0 +1,62 @@
+<template name="no-products">
+    <image class="no-products-icon" src="/images/nav/cart-off.png"></image>
+    <view class="title-box">
+        购物车空空如也～
+    </view>
+    <view class="to-index-btn" bindtap="toIndexPage">
+        去逛逛
+    </view>
+</template>
+
+<template name="cart-products-list">
+    <!-- <view class="trip">左滑可删除不需要的商品哦～</view> -->
+    <view class="productList">
+        <view class="has-products" wx:for-items="{{shoppingCartInfo}}" wx:key="id" wx:for-index="id">
+            <view class="product-contents active" bindtouchstart="touchS" bindtouchmove="touchM"
+                  bindtouchend="touchE" data-index="{{id}}">
+                <view class="products-info">
+                    <view class="img-box">
+                        <image mode="aspectFill" src="{{item.product.imageUrl}}" class="img"/>
+                    </view>
+                    <view class="text-box">
+                        <view class="products-title">{{item.product.title}}</view>
+                        <view class="option-label-box option-arrow item-border">
+                            <block wx:for="{{item.optionList}}" wx:for-item="list" wx:for-index="optionType"
+                                   wx:key="id">
+                                <view class="label-item-inline" wx:for="{{list}}" wx:key="id"
+                                      wx:if="{{item.active}}" bindtap="labelItemTap" data-type="{{optionType}}"
+                                      data-productOptionId="{{item.id}}">
+                                    <view class="inline" wx:if="{{optionType === '1'}}">{{item.desc}}+</view>
+                                    <view class="inline" wx:if="{{optionType === '2'}}">{{item.desc}}</view>
+                                </view>
+                            </block>
+                        </view>
+
+                        <view class="products-price">¥ {{item.price}}</view>
+                        <view class="buy-num">
+                            <view class="reduce-btn" catchtap="reduceBtnTap" data-index="{{key}}">-</view>
+                            <input type="number" value="{{item.number}}" data-key="{{item.id}}"
+                                   bindInput="changeCarNumber"/>
+                            <view class="add-btn {{item.sku.stock===0? 'disabled' : ''}}"
+                                  catchtap="addBtnTap" data-index="{{index}}">+
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view class="delete-btn" data-key="{{item.id}}" catchtap="delItem">
+                    删除
+                </view>
+                <image class="del-icon" src="/images/del.png" data-key="{{item.id}}"
+                       catchtap="delItem"></image>
+            </view>
+        </view>
+    </view>
+    <view class="checkOut-box">
+        <view class="left-price">
+            <view class="total" hidden="{{noSelect}}">合计：¥ {{totalPrice/100}} + {{totalScore}} 积分</view>
+        </view>
+        <view class="to-pay-btn">
+            <navigator url="/pages/to-pay-order/index">去结算</navigator>
+        </view>
+    </view>
+</template>

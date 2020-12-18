@@ -1,0 +1,87 @@
+<view class="container">
+    <view class="search">
+        <input type="text" placeholder="输入搜索关键词" value="{{name}}" bindInput="bindInput"
+               bindConfirm="bindConfirm"></input>
+        <image src="/images/icon/search.svg"></image>
+    </view>
+    <view class="content-container">
+        <scroll-view class="category-container" scroll-y="true" scroll-with-animation="true">
+            <view class="category {{categorySelected.id === category.categoryId?'active':''}}"
+                  wx:for="{{categories}}" wx:for-item="category" wx:key="id" data-id="{{category.categoryId}}"
+                  bindtap="onCategoryClick">
+                <view class="name {{categorySelected.id === category.categoryId?'active':''}}">{{category.name}}</view>
+            </view>
+        </scroll-view>
+        <scroll-view class="products-container" scroll-y="true" scroll-top="{{scrollTop}}" wx:if='{{onLoadStatus}}'>
+            <view wx:if="{{!currentProducts}}" class="no-data">
+                <view class="line"></view>
+                <view class="txt">暂无商品</view>
+                <view class="line"></view>
+            </view>
+            <block wx:for="{{categories}}" wx:key="id" wx:if="{{item.categoryId === categorySelected.id}}">
+                <navigator url="/pages/products/list?categoryId={{item.categoryId}}">
+                    <view class="no-data medium-category">
+                        <view class="line"></view>
+                        <view class="txt">{{item.name}}</view>
+                        <view class="line"></view>
+                    </view>
+                </navigator>
+                <view class="small-category-box">
+                    <navigator wx:for="{{categories}}" wx:for-item="small" wx:key="id"
+                               wx:if="{{small.categoryId === item.categoryId}}"
+                               url="/pages/products/list?categoryId={{small.categoryId}}">
+                        <view class="small-category">
+                            <image mode="aspectFill" src="{{small.imageUrl}}"></image>
+                            <view>{{small.name}}</view>
+                        </view>
+                    </navigator>
+                </view>
+            </block>
+
+            <view class="products" wx:for="{{currentProducts}}" wx:key="id">
+                <image mode="aspectFill" class="pic" src="{{item.imageUrl}}" data-id='{{item.id}}'
+                       bindtap="toDetailsTap">
+                    <!-- <image class='fresh-tag' src="/images/products-description/fresh.png"></image> -->
+                </image>
+                <view class="name ellipsis" data-id='{{item.id}}' bindtap="toDetailsTap">{{item.title}}</view>
+                <view class='soldInfo'>
+                    <view class='product-price-box'>
+                        <text class="price">¥{{item.price}}</text>
+                    </view>
+                </view>
+                <view class='soldInfo'>
+                    <view class='product-sales-box'>
+                        <text class="number">已售 {{item.numberSold}}件</text>
+                        <text>评价 +{{item.score}}积分</text>
+                    </view>
+                </view>
+                <image data-id="{{item.id}}" bindtap="addShopCart" class="car" src="/images/icon/car.svg"></image>
+            </view>
+        </scroll-view>
+    </view>
+</view>
+
+<block wx:if="{{skuCurProducts}}">
+    <view class="sku-mask"></view>
+    <view class="sku-container">
+        <image class="close" src="/images/icon/close.svg" bindtap="closeSku"></image>
+        <view class="sku" wx:for="{{skuCurProducts.properties}}" wx:key="id">
+            <view class="t">{{item.name}}</view>
+            <view class="items">
+                <text class="{{small.active? 'active' : ''}}" wx:for="{{item.childsCurProducts}}" wx:for-item="small"
+                      wx:key="id" data-pid="{{small.propertyId}}" data-id="{{small.id}}" bindtap="skuSelect">
+                    {{small.name}}
+                </text>
+            </view>
+        </view>
+        <view class="num">
+            <view class="t">购买数量</view>
+            <view class="num-box">
+                <text class="a" bindtap="storesReduce">-</text>
+                <text class="b">{{skuCurProducts.storesBuy}}</text>
+                <text class="a" bindtap="storesJia">+</text>
+            </view>
+        </view>
+    </view>
+    <view class="sku-btn" bindtap="addCarSku">加入购物车</view>
+</block>

@@ -1,0 +1,6 @@
+.env
+.idea/*
+logs/*
+vendor
+node_modules
+dist
